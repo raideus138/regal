@@ -7,8 +7,7 @@ const { getRoutes } = require('./routes');
 const app = express();
 const dotenv = require('dotenv');
 
-dotenv.config()
-
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const port = process.env.PORT || 3000;
 
@@ -33,7 +32,7 @@ app.get("/", (req, res) => {
   console.log(publicPath,"index.html")
 });
 app.use((req, res) => {
-  res.status(404).send("Error 404");
+  res.status(404).sendFile(path.join(publicPath, '404.html'));
 });
 
 app.listen(port, () => {

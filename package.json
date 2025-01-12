@@ -4,28 +4,24 @@
   "description": "ñaoñao",
   "main": "app.js",
   "scripts": {
-    "test": "node ./server/app.test.js",
-    "start": "node ./server/app.js"
+    "test": "cd server && node app.test.js",
+    "start": "cd server && node app.js"
   },
   "author": "RV",
   "license": "ISC",
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
-    "@types/express": "^5.0.0",
-    "typescript": "^5.7.3"
+    "@types/express": "^5.0.0"
   },
   "dependencies": {
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "kill-port": "^2.0.1",
     "mongoose": "^8.9.4",
-    "nvm": "^0.0.4",
     "passport": "^0.7.0",
     "passport-spotify": "^2.0.0",
     "path": "^0.12.7",
-    "querystring": "^0.2.1",
-    "rm": "^0.1.8"
+    "querystring": "^0.2.1"
   }
 }

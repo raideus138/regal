@@ -22,10 +22,28 @@
         }
         );
 
-        app.get("/logout", (req, res) => {
-        req.logout();
-        res.redirect("/");
+        app.get('/logout', (req, res, next) => {
+            req.logout((err) => {
+                if (err) {
+                    console.error('Error al cerrar sesión:', err);
+                    return next(err);
+                }
+        
+                req.session.destroy((sessionErr) => {
+                    if (sessionErr) {
+                        console.error('Error al destruir la sesión:', sessionErr);
+                        return next(sessionErr);
+                    }
+        
+                    res.clearCookie('connect.sid');
+        
+                    const redirectUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&show_dialog=true&scope=${encodeURIComponent('user-read-email user-read-private user-top-read user-read-currently-playing')}`;
+                    
+                    res.redirect(redirectUrl);
+                });
+            });
         });
+        
 
         app.get("/callback", passport.authenticate("spotify", {
             failureRedirect: "/",
