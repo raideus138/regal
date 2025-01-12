@@ -8,13 +8,14 @@
 
 html,
 body {
-  height: 100%;
+  height: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  
   font-family: "Nunito Sans";
   color: var(--blue);
   font-size: 1em;
@@ -45,8 +46,23 @@ h2 {
   font-weight: bold;
 }
 
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.container-contact {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .hamburger-menu {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   padding: 35px;
@@ -90,17 +106,21 @@ h2 {
 }
 
 nav {
-  position: absolute;
-  height: 100%;
+  position:fixed;
+  height: 200% ;
   top: 0;
   left: 0;
   background: var(--purple);
   color: var(--blue);
-  width: 300px;
+  width: auto;
   z-index: 1;
-  padding-top: 80px;
+  padding: 5rem 2rem 0 0;
   transform: translateX(-100%);
   transition: 0.24s cubic-bezier(0.52, 0.01, 0.8, 1);
+  font-family: "Nunito Sans";
+  font-weight: bold;
+  font-size: 0.7em;
+
 }
 nav li {
   transform: translateX(-5px);

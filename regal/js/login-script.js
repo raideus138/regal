@@ -89,3 +89,35 @@ burger.addEventListener('click', e => {
 function spotify_login(){
     window.location.href = '/auth/spotify';
 }
+
+const form = document.querySelector(".contact-form");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault(); 
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if (name === "" || email === "" || message === "") {
+    alert("Por favor, completa todos los campos.");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert("Por favor, introduce un correo electrónico válido.");
+    return;
+  }
+    sendFormData({ name, email, message });
+});
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function sendFormData(data) {
+  console.log("Datos enviados al servidor:", data);
+  alert("Formulario enviado con éxito.");
+  form.reset();
+}

@@ -87,6 +87,6 @@ burger.addEventListener('click', e => {
 });
 
 function back_main_button() {
-  window.location.href = './main.html'; 
+  window.location.href = './index.html'; 
   console.log('ppene');
   }
