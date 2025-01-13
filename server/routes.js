@@ -2,15 +2,18 @@
     const querystring = require('querystring');
     const passport = require('passport');
     const dotenv = require('dotenv');
-    
+    const cookieParser = require('cookie-parser');
+
     dotenv.config()
 
     function getRoutes(app) {
+        app.use(cookieParser());
+
         console.log("se estan ejecutando las rutas")
         app.get(
         "/auth/spotify",
         passport.authenticate("spotify", {
-        scope: ["user-read-email", "user-read-private", "user-top-read", "user-read-currently-playing"],
+        scope: ["user-read-email", "user-read-private", "user-top-read", "user-read-currently-playing", "user-read-recently-played"],
         })
         );
 
@@ -34,9 +37,9 @@
                         console.error('Error al destruir la sesión:', sessionErr);
                         return next(sessionErr);
                     }
-        
-                    res.clearCookie('connect.sid');
-        
+                    for (const cookieName in req.cookies) {
+                        res.clearCookie(cookieName, { path: '/' });
+                    }
                     res.redirect('/index.html');
                 });
             });
@@ -296,6 +299,70 @@
             }
         });
         
+        app.get('/top-genres', async (req, res) => {
+            const accessToken = req.user.accessToken;
+            try {
+                const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        
+                    },
+                    params: {
+                        limit: 10,
+                    },
+                });
+        
+                const genres = response.data.items
+                    .flatMap(artist => artist.genres) 
+                    .reduce((acc, genre) => {
+                        acc[genre] = (acc[genre] || 0) + 1; 
+                        return acc;
+                    }, {});
+        
+                const sortedGenres = Object.entries(genres)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0,10)
+                    .map(([genre]) => ({ name: genre.charAt(0).toUpperCase() + genre.slice(1).toLowerCase() })); 
+        
+                res.json(sortedGenres);
+            } catch (error) {
+                console.error('Error fetching top genres:', error);
+                res.status(500).json({ error: 'Failed to fetch top genres' });
+            }
+        });
+
+        app.get('/recently-played', async (req, res) => {
+            const accessToken = req.user.accessToken;
+        
+            try {
+                const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    params: {
+                        limit: 10, 
+                    },
+                });
+        
+                const songs = response.data.items
+                    .filter(item => item.track && item.track.name && item.track.artists) // Ensure data exists
+                    .map(item => ({
+                        name: item.track.name,
+                        artist: item.track.artists.map(artist => artist.name).join(', '), // Join artist names
+                    }));
+        
+                res.json(songs);
+            } catch (error) {
+                console.error(
+                    'Error fetching recently played tracks:',
+                    error.response ? error.response.data : error.message
+                );
+                res.status(500).json({ error: 'Failed to fetch recently played tracks' });
+            }
+        });
+        
+
+
         
         }
 

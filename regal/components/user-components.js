@@ -1,4 +1,5 @@
 let urlProfile = '';
+let genres = '';
 
 const date = new Date();
 const dateText = document.getElementById("date");
@@ -63,7 +64,7 @@ fetch('/top-artists')
         let index = 0;
         topArtists.forEach(artist => {
             const listItem = document.createElement('tr');
-            
+            genres = artist.genres.join(', ');
             listItem.innerHTML = `
                 <td>${index+1}</td>
                 <td>${artist.name}</td>
@@ -73,9 +74,57 @@ fetch('/top-artists')
             topArtistsList.appendChild(listItem);
             index++;
         });
-        
     })
     .catch(error => topArtistsList.innerHTML = `<tr><td colspan="4">We couldn't find your favorite artists. The error is: ${error.message}</td></tr>`);
+
+
+    const topGenresList = document.querySelector('.table-genre tbody');
+
+fetch('/top-genres')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error (${response.status}): ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(topGenres => {
+        let index = 0;
+        topGenres.forEach(genre => {
+            const listItem = document.createElement('tr');
+            listItem.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${genre.name}</td>
+            `;
+            topGenresList.appendChild(listItem);
+            index++;
+        });
+    })
+    .catch(error => topGenresList.innerHTML = `<tr><td colspan="2">We couldn't find your top genres. The error is: ${error.message}</td></tr>`);
+
+    const recentlyPlayedElement = document.querySelector('#recently-played');
+    fetch('/recently-played')
+    .then(response => response.json())
+    .then(recentlyPlayed => {
+        if (!recentlyPlayed || recentlyPlayed.length === 0) {
+            recentlyPlayedElement.innerHTML = '<p>No recently played tracks found.</p>';
+            return;
+        }
+        index = 0;
+        recentlyPlayedElement.innerHTML = ''; // Clear previous content
+        recentlyPlayed.forEach(track => {
+            const trackElement = document.createElement('tr');
+            trackElement.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${track.name}</td>
+            `;
+            recentlyPlayedElement.appendChild(trackElement);
+            index++;
+        });
+    })
+    .catch(error => {
+        const recentlyPlayedElement = document.querySelector('#recently-played');
+        recentlyPlayedElement.innerHTML = `<p>We couldn't find your recently played tracks. The error is: ${error.message}</p>`;
+    });
 
 
     
@@ -91,6 +140,7 @@ try {
 } catch (e) {
     songNowElement.innerHTML = `<h6>You are not listening to any song</h6>`;
 }
+
 
 
 
@@ -119,5 +169,11 @@ function mail(){
     return location.href = 'mailto:raivicuna@gmail.com?subject=Contact';
 }
 function openSpotify(url=urlProfile) {
+    event
     window.open(`${url}`, '_blank');
 }
+
+document.querySelector('.SPOTIFY').addEventListener('click', function(event){
+    event.preventDefault()
+    openSpotify();
+});
