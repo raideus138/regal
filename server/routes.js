@@ -37,9 +37,7 @@
         
                     res.clearCookie('connect.sid');
         
-                    const redirectUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&show_dialog=true&scope=${encodeURIComponent('user-read-email user-read-private user-top-read user-read-currently-playing')}`;
-                    
-                    res.redirect(redirectUrl);
+                    res.redirect('/index.html');
                 });
             });
         });
@@ -297,6 +295,7 @@
                 );
             }
         });
+        
         
         }
 

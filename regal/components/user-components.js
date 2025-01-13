@@ -85,7 +85,7 @@ try {
         
         songNowElement.innerHTML = `<h6>You are listening <strong>${data.name}</strong></h3>
                                         
-                                        <div>By ${data.artists[0].name}</div>
+                                        <div>By <strong>${data.artists[0].name}</strong></div>
                                         `;
     });
 } catch (e) {

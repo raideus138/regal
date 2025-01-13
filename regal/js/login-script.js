@@ -91,6 +91,27 @@ function spotify_login(){
 }
 
 const form = document.querySelector(".contact-form");
+const alert_text = document.querySelector(".alert");
+
+function color_text(e) {
+  var text = document.getElementById("text");
+  var colors = {
+    blue: '#0e0620',
+    light_blue: '#5277c2',
+    white: '#fff',
+    green: '#2ccf6d',
+    purple: '#ec37fc',
+    red: '#cf6767'
+  }
+  alert_text.style.color = colors[e];
+}
+
+function sendAlert(message, color) {
+  color_text(color);
+  alert_text.innerHTML = message;
+}
+
+
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); 
@@ -100,12 +121,12 @@ form.addEventListener("submit", (event) => {
   const message = document.getElementById("message").value.trim();
 
   if (name === "" || email === "" || message === "") {
-    alert("Por favor, completa todos los campos.");
+    sendAlert("Por favor, completa todos los campos.", "red");
     return;
   }
 
   if (!validateEmail(email)) {
-    alert("Por favor, introduce un correo electrónico válido.");
+    sendAlert("Por favor, introduce un correo electrónico válido.", "red");
     return;
   }
     sendFormData({ name, email, message });
@@ -118,6 +139,6 @@ function validateEmail(email) {
 
 function sendFormData(data) {
   console.log("Datos enviados al servidor:", data);
-  alert("Formulario enviado con éxito.");
+  sendAlert("Formulario enviado con éxito.", "green");
   form.reset();
 }
