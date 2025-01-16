@@ -13,7 +13,7 @@
         app.get(
         "/auth/spotify",
         passport.authenticate("spotify", {
-        scope: ["user-read-email", "user-read-private", "user-top-read", "user-read-currently-playing", "user-read-recently-played"],
+        scope: ["user-read-email", "user-read-private", "user-top-read", "user-read-currently-playing", "user-read-recently-played", "user-follow-read"],
         })
         );
 
@@ -113,6 +113,29 @@
             .send("Error al obtener la información del perfil del usuario.");
         }
         });
+
+        app.get('/me/following', async (req, res) => {
+            try {
+                if (!req.isAuthenticated()) {
+                    return res.status(401).send('No autorizado');
+                }
+        
+                const accessToken = req.user.accessToken;
+        
+                const response = await axios.get('https://api.spotify.com/v1/me/following', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    params: {
+                        type: 'artist',
+                    },
+                });
+                const artists = response.data;
+        
+                res.json(artists);
+            } catch (error) {
+                res.status(500).json({ error: 'Failed to fetch followed artists' });
+    }});
 
         app.get("/top-tracks", async (req, res) => {
         try {
@@ -243,7 +266,7 @@
                     if (response.data && response.data.item) {
                         res.json(response.data.item);
                     } else {
-                        res.status(404).send("No se encontró ninguna canción en reproducción actualmente.");
+                        res.json('No song is playing')
                     }
                 }
             } catch (error) {
