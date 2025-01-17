@@ -2,6 +2,8 @@ let urlProfile = '';
 let genres = '';
 let ISO_country = '';
 let country = '';
+let device = '';
+
 const date = new Date();
 const dateText = document.getElementById("date");
 dateText.textContent = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -15,11 +17,6 @@ fetch('/me')
         urlProfile = userProfile.external_urls.spotify;
         const userProfileImage = document.getElementById('user-img');
         userProfileImage.src = userProfile.images.length > 0 ? userProfile.images[0].url : '';
-
-        transform_iso_to_name(ISO_country).then(countryName => {
-            country = countryName;
-            followingElement.innerHTML = `<p>You follow <strong>${following.artists.total}</strong> people and listen to them from <str>${country}</str> on Spotify</p>`;
-        });
     })
     .catch(error => {
         userElement.textContent = 'User not found';
@@ -34,6 +31,10 @@ fetch('/me/following')
         return response.json();
     })
     .then(following => {
+        transform_iso_to_name(ISO_country).then(countryName => {
+            country = countryName;
+            followingElement.innerHTML = `<p>You follow <strong>${following.artists.total}</strong> people and listen to them from <strong  >${country}</strong> on Spotify</p>`;
+        });
         if (following && following.artists && following.artists.total) {
             followingElement.innerHTML = `<p>You follow <strong>${following.artists.total}</strong> people and listen to them from <str>${country}</str> on Spotify</p>`;
         } else {
@@ -50,25 +51,26 @@ fetch('/top-tracks')
     .then(topTracks => {
         let index = 0;
         topTracks.forEach(track => {
-            var newRow = document.createElement('tr');
+            const newRow = document.createElement('tr');
+            newRow.classList.add('trackRow');
+            newRow.setAttribute('data-url', track.external_urls.spotify);
             newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td></td>
-                <td>${track.name}</td>
-                <td></td>
-                <td>${track.artists[0]}${track.artists.length > 1 ? ', ' + track.artists[1] : ''}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                    <td>${index + 1}</td>
+                    <td></td>
+                    <td>${track.name}</td>
+                    <td></td>
+                    <td>${track.artists[0]}${track.artists.length > 1 ? ', ' + track.artists[1] : ''}</td>
                 `;
+            newRow.addEventListener('click', function () {
+                openSpotify(track.external_urls.spotify);
+            });
             tbody.appendChild(newRow);
             index++;
         });
     })
-    .catch(error => tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`);
+    .catch(error => {
+        tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
+    });
 
 const topArtistsList = document.querySelector('.table-artists tbody');
 fetch('/top-artists')
@@ -142,18 +144,46 @@ fetch('/recently-played')
         recentlyPlayedElement.innerHTML = `<p>We couldn't find your recently played tracks. The error is: ${error.message}</p>`;
     });
 
-const songNowElement = document.getElementById('song-now');
-try {
-    fetch('/song-now').then(r => r.json()).then(data => {
-
-        songNowElement.innerHTML = `<h6>You are listening <strong>${data.name}</strong></h3>
-                                        
-                                        <div>By <strong>${data.artists[0].name}</strong></div>
-                                        `;
+fetch('/devices')
+    .then(response => response.json())
+    .then(data => {
+        if (!data) {
+            console.log('No devices found', data);
+            return;
+        };
+        data.forEach(Device => {
+            if (Device.is_active) {
+                device = Device.name;
+            }
+        });
     });
-} catch (e) {
-    songNowElement.innerHTML = `<h6>You are not listening to any song</h6>`;
+
+const songNowElement = document.getElementById('song-now');
+function fetchSongNow() {
+    fetch('/song-now')
+        .then(response => response.json())
+        .then(data => {
+            songNowElement.innerHTML = '';
+            songNowElement.innerHTML = `
+                    <h6>You are listening to <strong>${data.name}</strong></h6>
+                    <div>By <strong>${data.artists[0].name}</strong> on <strong>${device}</strong></div>
+                `;
+        })
+        .catch(() => {
+            songNowElement.innerHTML = `<h6>You are not listening to any song</h6>`;
+        });
 }
+
+fetchSongNow();
+
+let intervalId = setInterval(fetchSongNow, 195000);
+
+window.addEventListener('beforeunload', () => {
+    clearInterval(intervalId);
+});
+
+
+
 
 async function transform_iso_to_name(iso) {
     if (!iso) {
@@ -187,3 +217,4 @@ document.querySelector('.SPOTIFY').addEventListener('click', function (event) {
     event.preventDefault();
     openSpotify();
 });
+

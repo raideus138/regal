@@ -12745,6 +12745,10 @@ input[type="button"].btn-block {
   margin-bottom: -1px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .nav-tabs .nav-link {
   border: 1px solid transparent;
   border-top-left-radius: 0.25rem;
@@ -22822,6 +22826,7 @@ dl li {
     width: calc(100% - 70px);
   }
 }
+
 
 
 /*# sourceMappingURL=maps/style.css.map */
