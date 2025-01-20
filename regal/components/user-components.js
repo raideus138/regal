@@ -182,9 +182,23 @@ window.addEventListener('beforeunload', () => {
     clearInterval(intervalId);
 });
 
-
-
-
+function playlist(){
+    const element = document.querySelector('.playlist-text');
+    fetch('/playlist')
+        .then(response => response.json())
+        .then(data =>{
+            if (!data) {
+                element.style.color = 'red';
+                element.textContent = 'The playlist could not be created';
+                
+                return
+            } else {
+                element.style.color = 'green';
+                element.textContent = 'The playlist was created successfully';
+                element.toggleClass("GO");
+            }
+        })
+};
 async function transform_iso_to_name(iso) {
     if (!iso) {
         return '<span style="color: red;">(We don\'t know your country!)</span>';
@@ -216,5 +230,20 @@ function openSpotify(url = urlProfile) {
 document.querySelector('.SPOTIFY').addEventListener('click', function (event) {
     event.preventDefault();
     openSpotify();
+});
+
+document.querySelector('.PLAYLIST').addEventListener('click', function (event) {
+    event.preventDefault();
+    playlist();
+});
+
+document.querySelector('.GO').addEventListener('click', function (event) {
+    event.preventDefault();
+    openSpotify();
+});
+
+document.querySelector('.EXIT').addEventListener('click', function (event) {
+    event.preventDefault();
+    hidePopup();
 });
 

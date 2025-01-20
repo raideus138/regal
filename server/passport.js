@@ -17,7 +17,17 @@ function connectPassport() {
         authorizationURL: process.env.AUTH_URL,
         tokenURL: process.env.TOKEN_URL,
         userProfileURL: process.env.USER_PROFILE_URL,
-        scope: ['user-read-email', 'user-read-private', 'user-top-read','user-read-currently-playing'],
+        scope: [
+            "user-read-email",
+            "user-read-private",
+            "user-top-read",
+            "user-read-currently-playing",
+            "user-read-recently-played",
+            "user-follow-read",
+            "user-read-playback-state",
+            'playlist-modify-public',
+            'playlist-modify-private',
+        ],
         }, async (accessToken, refreshToken, profile, done) => {
         try {
             const existingUser = await User.findOne({ spotifyId: profile.id });

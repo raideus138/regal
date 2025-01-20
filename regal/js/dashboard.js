@@ -346,3 +346,21 @@
     });
   });
 })(jQuery);
+
+function showPopup () {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('popup');
+  overlay.style.display = 'block';
+  setTimeout(() => {
+      popup.classList.add('active');
+  }, 10);
+}
+
+function hidePopup () {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('popup');
+  popup.classList.remove('active');
+  setTimeout(() => {
+      overlay.style.display = 'none';
+  }, 300);
+}

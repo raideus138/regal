@@ -9,7 +9,6 @@ dotenv.config()
 function getRoutes(app) {
     app.use(cookieParser());
 
-    console.log("se estan ejecutando las rutas")
     app.get(
         "/auth/spotify",
         passport.authenticate("spotify", {
@@ -174,7 +173,7 @@ function getRoutes(app) {
             const accessToken = req.user.accessToken;
             const options = {
                 headers: { Authorization: `Bearer ${accessToken}` },
-                params: { type: "tracks", time_range: "long_term", limit: 10 },
+                params: { type: "tracks", time_range: "short_term", limit: 10 },
             };
             const response = await axios.get(
                 "https://api.spotify.com/v1/me/top/tracks",
@@ -216,7 +215,7 @@ function getRoutes(app) {
                 "https://api.spotify.com/v1/me/top/artists",
                 {
                     headers: { Authorization: `Bearer ${accessToken}` },
-                    params: { type: "artists", time_range: "long_term", limit: 1 },
+                    params: { type: "artists", time_range: "short_term", limit: 1 },
                 }
             );
             const topArtist = topArtistResponse.data.items[0];
@@ -249,7 +248,7 @@ function getRoutes(app) {
             const accessToken = req.user.accessToken;
             const options = {
                 headers: { Authorization: `Bearer ${accessToken}` },
-                params: { type: "artists", time_range: "long_term", limit: 10 },
+                params: { type: "artists", time_range: "short_term", limit: 10 },
             };
             const response = await axios.get(
                 "https://api.spotify.com/v1/me/top/artists",
@@ -307,60 +306,58 @@ function getRoutes(app) {
     });
 
 
-    // app.get("/playlist", async (req, res) => {
-    //     try {
-    //         if (!req.isAuthenticated()) {
-    //             return res.status(401).send("No autorizado");
-    //         }
-    //         const accessToken = req.user.accessToken;
-    //         const options = {
-    //             headers: {
-    //                 Authorization: `Bearer ${accessToken}`,
-    //             },
-
-    //             params: {
-    //                 type: "tracks",
-    //                 time_range: "long_term",
-    //                 limit: 20,
-    //             },
-    //         };
-    //         const response = await axios.get(
-    //             "https://api.spotify.com/v1/me/top/tracks",
-    //             options
-    //         );
-    //         const { items } = response.data;
-    //         if (Array.isArray(items) && items.length > 0) {
-    //             const topTrackNames = items.map(({ name, artists }) => ({
-    //                 name,
-    //                 artists: artists.map((artist) => artist.name),
-    //             }));
-
-    //             const options2 = {
-    //                 headers: {
-    //                     Authorization: `Bearer ${accessToken}`,
-    //                 },
-    //                 params: {
-    //                     limit: 10,
-    //                 }
-    //             };
-    //             const response2 = await axios.get('https://api.spotify.com/v1/me/player/recently-played', options2);
-    //             const songs = response2.data.items.filter(item => item.track && item.track.name && item.track.artists) .map(item => ({
-    //                 name: item.track.name,
-    //                 artist: item.track.artists.map(artist => artist.name).join(', '),
-    //             }));
-
-    //             res.json({ topTrackNames, songs });
-
-    //         } else {
-    //             console.log("No se encontraron canciones más escuchadas.");
-    //             res.status(404).send("No se encontraron canciones más escuchadas.");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error al obtener las canciones más escuchadas:",error.message);
-    //         res.status(500).send(`Error al obtener las canciones más escuchadas: ${error.message}`);
-    //     }
-    // });
-
+    app.get('/playlist', async (req, res) => {
+        try {
+            const accessToken = req.user.accessToken;
+            const month = new Date().toLocaleString('en', { month: 'long' }).replace(/^\w/, c => c.toUpperCase());
+            if (!accessToken) {
+                return res.status(401).json({ error: 'No access token provided' });
+            }
+                const topTracksResponse = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                params: { limit: 50, time_range: 'short_term' },
+            });
+            const topTracks = topTracksResponse.data.items.map(track => track.uri);
+            const userProfileResponse = await axios.get('https://api.spotify.com/v1/me', {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            const userId = userProfileResponse.data.id;
+    
+            const newPlaylistResponse = await axios.post(
+                `https://api.spotify.com/v1/users/${userId}/playlists`,
+                {
+                    name: `Top 50 ${month}`,
+                    description: 'Your top 50 songs of the month',
+                    public: false,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const playlistId = newPlaylistResponse.data.id;
+                await axios.post(
+                `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+                { uris: topTracks },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            res.status(200).json({
+                message: 'Playlist creada con éxito',
+                playlistUrl: newPlaylistResponse.data.external_urls.spotify,
+            });
+        } catch (error) {
+            console.error('Error en /playlist:', error.response?.data || error.message);
+            res.status(500).json({ error: 'Error al crear la playlist', details: error.response?.data || error.message });
+        }
+    });
+    
 
     app.get('/top-genres', async (req, res) => {
         const accessToken = req.user.accessToken;
@@ -424,9 +421,7 @@ function getRoutes(app) {
         }
     });
 
-
-
-
+    
 }
 
 module.exports = { getRoutes };

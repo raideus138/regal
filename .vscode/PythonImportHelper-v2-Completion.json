@@ -1,0 +1,29 @@
+[
+    {
+        "label": "pyautogui",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pyautogui",
+        "description": "pyautogui",
+        "detail": "pyautogui",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "delete_playlists",
+        "kind": 2,
+        "importPath": "delete-playlist",
+        "description": "delete-playlist",
+        "peekOfCode": "def delete_playlists(num_playlists):\n    screenWidth, screenHeight = pya.size()\n    spotify = pya.getWindowsWithTitle('Spotify')[0]\n    spotify.activate()\n    for _ in range(num_playlists):\n        pya.mouseDown(x=300, y=350)\n        pya.click(button='right')\n        time.sleep(0.5)  \n        pya.moveTo(x=320, y=550)\n        pya.click()",
+        "detail": "delete-playlist",
+        "documentation": {}
+    }
+]
