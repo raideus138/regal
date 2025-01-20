@@ -182,21 +182,35 @@ window.addEventListener('beforeunload', () => {
     clearInterval(intervalId);
 });
 
-function playlist(){
+function playlist() {
     const element = document.querySelector('.playlist-text');
+    const button = document.querySelector('.submit-button');
     fetch('/playlist')
         .then(response => response.json())
-        .then(data =>{
+        .then(data => {
+            console.log(data)
             if (!data) {
                 element.style.color = 'red';
                 element.textContent = 'The playlist could not be created';
-                
+                button.textContent = 'Go to Spotify';
                 return
             } else {
                 element.style.color = 'green';
                 element.textContent = 'The playlist was created successfully';
-                element.toggleClass("GO");
+                button.classList.remove('PLAYLIST');
+                button.classList.add('GO');
+                button.textContent = 'Go to Spotify';
+
+                document.querySelector('.GO').addEventListener('click', function (event) {
+                    event.preventDefault();
+                    console.log('preventdefault');
+                    openSpotify(data.playlistUrl);
+                    console.log('openSpotify');
+                });
+
+
             }
+            element.textContent = 'You already create the playlist'
         })
 };
 async function transform_iso_to_name(iso) {
@@ -237,10 +251,6 @@ document.querySelector('.PLAYLIST').addEventListener('click', function (event) {
     playlist();
 });
 
-document.querySelector('.GO').addEventListener('click', function (event) {
-    event.preventDefault();
-    openSpotify();
-});
 
 document.querySelector('.EXIT').addEventListener('click', function (event) {
     event.preventDefault();
