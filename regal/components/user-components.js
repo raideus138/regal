@@ -47,32 +47,48 @@ fetch('/me/following')
         followingElement.innerHTML = `<p>Could not fetch following data. Error: ${error.message}</p>`;
     });
 
-const tbody = document.querySelector('.table tbody');
-fetch('/top-tracks')
-    .then(response => response.json())
-    .then(topTracks => {
-        let index = 0;
-        topTracks.forEach(track => {
-            const newRow = document.createElement('tr');
-            newRow.classList.add('trackRow');
-            newRow.setAttribute('data-url', track.external_urls.spotify);
-            newRow.innerHTML = `
+    const tbody = document.querySelector('.table tbody');
+
+    fetch('/top-tracks')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error (${response.status}): ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(topTracks => {
+            let index = 0;
+            topTracks.forEach(track => {
+                const newRow = document.createElement('tr');
+                newRow.classList.add('trackRow');
+                newRow.setAttribute('data-url', track.external_urls.spotify);
+                    const imageUrl = track.album.images?.[2]?.url || '';
+    
+                newRow.innerHTML = `
                     <td>${index + 1}</td>
+                    <td></td>
+                    <td>
+                        <img src='${imageUrl}' alt="${track.name}" 
+                            style="object-fit: cover; border-radius: 5px;">
+                    </td>
                     <td></td>
                     <td>${track.name}</td>
                     <td></td>
-                    <td>${track.artists[0]}${track.artists.length > 1 ? ', ' + track.artists[1] : ''}</td>
+                    <td>${track.artists.map(artist => artist.name).join(', ')}</td>
                 `;
-            newRow.addEventListener('click', function () {
-                openSpotify(track.external_urls.spotify);
+    
+                newRow.addEventListener('click', function () {
+                    openSpotify(track.external_urls.spotify);
+                });
+    
+                tbody.appendChild(newRow);
+                index++;
             });
-            tbody.appendChild(newRow);
-            index++;
+        })
+        .catch(error => {
+            tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
         });
-    })
-    .catch(error => {
-        tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
-    });
+    
 
 const topArtistsList = document.querySelector('.table-artists tbody');
 fetch('/top-artists')
@@ -85,14 +101,22 @@ fetch('/top-artists')
     .then(topArtists => {
         let index = 0;
         topArtists.forEach(artist => {
+            const imageUrl = artist.images?.[2]?.url || '';
             const listItem = document.createElement('tr');
             genres = artist.genres.join(', ');
             listItem.innerHTML = `
                 <td>${index + 1}</td>
+                <td>
+                    <img src='${imageUrl}' alt="${artist.name}" 
+                        style="object-fit: cover; border-radius: 5px;">
+                    </td>               
                 <td>${artist.name}</td>
                 <td></td>
                 <td></td>
                 `;
+            listItem.addEventListener('click', () => {
+                openSpotify(artist.href)
+            })
             topArtistsList.appendChild(listItem);
             index++;
         });
@@ -131,11 +155,16 @@ fetch('/recently-played')
         }
         let index = 0;
         recentlyPlayed.forEach(track => {
-            let firstArtist = track.artist.split(',')[0].trim();
+            console.log(track)
+            let firstArtist = track.artist;
 
             const trackElement = document.createElement('tr');
             trackElement.innerHTML = `
                     <td>${index + 1}</td>
+                    <td>
+                        <img src='${track.album.images[0]}' alt="${track.name}" 
+                            style="object-fit: cover; border-radius: 5px;">
+                    </td>
                     <td>${track.name} <strong>(${firstArtist})</strong></td>
                 `;
             recentlyPlayedElement.appendChild(trackElement);
@@ -150,7 +179,6 @@ fetch('/devices')
     .then(response => response.json())
     .then(data => {
         if (!data) {
-            console.log('No devices found', data);
             return;
         };
         data.forEach(Device => {
@@ -165,10 +193,14 @@ function fetchSongNow() {
     fetch('/song-now')
         .then(response => response.json())
         .then(data => {
+            songNowElement.addEventListener('click', () => {
+                openSpotify(data.item.external_urls.spotify)
+            });
+            songNowElement.style.cursor = 'pointer';
             songNowElement.innerHTML = '';
             songNowElement.innerHTML = `
-                    <h6>You are listening to <strong>${data.name}</strong></h6>
-                    <div>By <strong>${data.artists[0].name}</strong> on <strong>${device}</strong></div>
+                    <h6>You are listening to <strong>${data.item.name}</strong> <img src='${data.item.album.images[2].url}' alt="${data.item.name}" style="object-fit: cover; border-radius: 5px; height: 1.5em; width: auto;"></h6>
+                    <div>By <strong>${data.item.artists[0].name}</strong> on <strong>${device}</strong></div>
                 `;
         })
         .catch(() => {
@@ -178,7 +210,7 @@ function fetchSongNow() {
 
 fetchSongNow();
 
-let intervalId = setInterval(fetchSongNow, 195000);
+let intervalId = setInterval(fetchSongNow, 60000);
 
 window.addEventListener('beforeunload', () => {
     clearInterval(intervalId);
@@ -252,5 +284,3 @@ document.querySelector('.GO').addEventListener('click', function (event) {
     event.preventDefault();
     openSpotify(urlPlaylist);
 });
-
-

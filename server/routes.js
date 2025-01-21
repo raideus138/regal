@@ -179,17 +179,7 @@ function getRoutes(app) {
             );
 
             const { items } = response.data;
-            if (Array.isArray(items) && items.length > 0) {
-                const topTrackNames = items.map(({ name, artists, external_urls }) => ({
-                    name,
-                    artists: artists.map((artist) => artist.name),
-                    external_urls,
-                }));
-                res.json(topTrackNames);
-            } else {
-                console.log("No se encontraron canciones más escuchadas.");
-                res.status(404).send("No se encontraron canciones más escuchadas.");
-            }
+            res.json(items);
         } catch (error) {
             console.error(
                 "Error al obtener las canciones más escuchadas:",
@@ -216,17 +206,7 @@ function getRoutes(app) {
                     params: { type: "artists", time_range: "short_term", limit: 1 },
                 }
             );
-            const topArtist = topArtistResponse.data.items[0];
-            if (topArtist) {
-                res.json({
-                    name: topArtist.name,
-                    genres: topArtist.genres,
-                    popularity: topArtist.popularity,
-                    image: topArtist.images.length > 0 ? topArtist.images[0].url : null,
-                });
-            } else {
-                res.status(404).send("No se encontró el artista más escuchado.");
-            }
+            res.json(topArtistResponse)
         } catch (error) {
             console.error(
                 "Error al obtener el artista más escuchado:",
@@ -254,10 +234,11 @@ function getRoutes(app) {
             );
             const { items } = response.data;
             if (Array.isArray(items) && items.length > 0) {
-                const topArtists = items.map(({ name, genres, images }) => ({
+                const topArtists = items.map(({ name, genres, images, href }) => ({
                     name,
                     genres,
                     images,
+                    href,
                 }));
                 res.json(topArtists);
             } else {
@@ -292,7 +273,7 @@ function getRoutes(app) {
                 );
 
                 if (response.data && response.data.item) {
-                    res.json(response.data.item);
+                    res.json(response.data);
                 } else {
                     res.json('No song is playing')
                 }
@@ -403,12 +384,6 @@ function getRoutes(app) {
             });
 
             const songs = response.data.items
-                .filter(item => item.track && item.track.name && item.track.artists) 
-                .map(item => ({
-                    name: item.track.name,
-                    artist: item.track.artists.map(artist => artist.name).join(', '), 
-                }));
-
             res.json(songs);
         } catch (error) {
             console.error(
