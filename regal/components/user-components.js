@@ -3,6 +3,7 @@ let genres = '';
 let ISO_country = '';
 let country = '';
 let device = '';
+let urlPlaylist = '';
 
 const date = new Date();
 const dateText = document.getElementById("date");
@@ -26,6 +27,7 @@ const followingElement = document.querySelector('.about-you');
 fetch('/me/following')
     .then(response => {
         if (!response.ok) {
+            followingElement.innerHTML = `<p>Could not fetch following data. Error: ${error.message}</p>`;
             throw new Error(`Error fetching following data: ${response.statusText}`);
         }
         return response.json();
@@ -185,32 +187,27 @@ window.addEventListener('beforeunload', () => {
 function playlist() {
     const element = document.querySelector('.playlist-text');
     const button = document.querySelector('.submit-button');
+    const goButton = document.querySelector('.GO');
     fetch('/playlist')
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            urlPlaylist = data.playlistUrl;
             if (!data) {
                 element.style.color = 'red';
                 element.textContent = 'The playlist could not be created';
-                button.textContent = 'Go to Spotify';
+                button.textContent = 'Close';
+                document.querySelector('.EXIT').addEventListener('click', function (event) {
+                    event.preventDefault();
+                    hidePopup();
+                });
                 return
             } else {
                 element.style.color = 'green';
                 element.textContent = 'The playlist was created successfully';
-                button.classList.remove('PLAYLIST');
-                button.classList.add('GO');
-                button.textContent = 'Go to Spotify';
-
-                document.querySelector('.GO').addEventListener('click', function (event) {
-                    event.preventDefault();
-                    console.log('preventdefault');
-                    openSpotify(data.playlistUrl);
-                    console.log('openSpotify');
-                });
-
+                button.style.display = 'none';
+                goButton.style.display = 'block';
 
             }
-            element.textContent = 'You already create the playlist'
         })
 };
 async function transform_iso_to_name(iso) {
@@ -251,9 +248,9 @@ document.querySelector('.PLAYLIST').addEventListener('click', function (event) {
     playlist();
 });
 
-
-document.querySelector('.EXIT').addEventListener('click', function (event) {
+document.querySelector('.GO').addEventListener('click', function (event) {
     event.preventDefault();
-    hidePopup();
+    openSpotify(urlPlaylist);
 });
+
 

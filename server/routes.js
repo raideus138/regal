@@ -34,27 +34,6 @@ function getRoutes(app) {
         }
     );
 
-    app.get('/logout', (req, res, next) => {
-        req.logout((err) => {
-            if (err) {
-                console.error('Error al cerrar sesión:', err);
-                return next(err);
-            }
-
-            req.session.destroy((sessionErr) => {
-                if (sessionErr) {
-                    console.error('Error al destruir la sesión:', sessionErr);
-                    return next(sessionErr);
-                }
-                for (const cookieName in req.cookies) {
-                    res.clearCookie(cookieName, { path: '/' });
-                }
-                res.redirect('/index.html');
-            });
-        });
-    });
-
-
     app.get("/callback", passport.authenticate("spotify", {
         failureRedirect: "/",
     }),
@@ -139,6 +118,25 @@ function getRoutes(app) {
         } catch (err) {
             res.status(500).json({ error: 'Failed to fetch devices' });
         }
+    });
+
+    app.get('/logout', (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error al destruir la sesión:', err);
+                return res.status(500).send('Error al cerrar sesión.');
+            }
+    
+            res.send(`
+                <script>
+                    const spotifyLogout = window.open('https://www.spotify.com/logout/', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
+                    setTimeout(() => {
+                        spotifyLogout.close();
+                        window.location.href = '/index.html';
+                    }, 200);
+                </script>
+            `);
+        });
     });
 
     app.get('/me/following', async (req, res) => {

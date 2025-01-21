@@ -8618,7 +8618,8 @@
   --gray-lighter: #e8eff4;
   --gray-lightest: #e6e9ed;
   --black: #000000;
-  --primary: #ec37fc;
+  /* --primary: #ec37fc; */
+  --primary: linear-gradient(135deg, #ec37fc, #e4a2f1);
   --secondary: #e4e6f6;
   --success: #51c81c;
   --info: #3794fc;
@@ -21757,7 +21758,7 @@ dl li {
 /* Sidebar */
 .sidebar {
   min-height: calc(100vh - 60px);
-  background: #ec37fc;
+  background: var(--primary);
   font-family: "Karla", sans-serif;
   font-weight: normal;
   padding: 0;
