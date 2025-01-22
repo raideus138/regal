@@ -47,25 +47,24 @@ fetch('/me/following')
         followingElement.innerHTML = `<p>Could not fetch following data. Error: ${error.message}</p>`;
     });
 
-    const tbody = document.querySelector('.table tbody');
+const tbody = document.querySelector('.table tbody');
 
-    fetch('/top-tracks')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error (${response.status}): ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(topTracks => {
-            let index = 0;
-            topTracks.forEach(track => {
-                console.log(track   )
-                const newRow = document.createElement('tr');
-                newRow.classList.add('trackRow');
-                newRow.setAttribute('data-url', track.external_urls.spotify);
-                    const imageUrl = track.album.images?.[2]?.url || '';
-    
-                newRow.innerHTML = `
+fetch('/top-tracks')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error (${response.status}): ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(topTracks => {
+        let index = 0;
+        topTracks.forEach(track => {
+            const newRow = document.createElement('tr');
+            newRow.classList.add('trackRow');
+            newRow.setAttribute('data-url', track.external_urls.spotify);
+            const imageUrl = track.album.images?.[2]?.url || '';
+
+            newRow.innerHTML = `
                     <td>${index + 1}</td>
                     <td></td>
                     <td>
@@ -77,19 +76,19 @@ fetch('/me/following')
                     <td></td>
                     <td>${track.artists.map(artist => artist.name).join(', ')}</td>
                 `;
-    
-                newRow.addEventListener('click', function () {
-                    openSpotify(track.external_urls.spotify);
-                });
-    
-                tbody.appendChild(newRow);
-                index++;
+
+            newRow.addEventListener('click', function () {
+                openSpotify(track.external_urls.spotify);
             });
-        })
-        .catch(error => {
-            tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
+
+            tbody.appendChild(newRow);
+            index++;
         });
-    
+    })
+    .catch(error => {
+        tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
+    });
+
 
 const topArtistsList = document.querySelector('.table-artists tbody');
 fetch('/top-artists')
@@ -192,15 +191,25 @@ function fetchSongNow() {
     fetch('/song-now')
         .then(response => response.json())
         .then(data => {
-            songNowElement.addEventListener('click', () => {
-                openSpotify(data.item.external_urls.spotify)
-            });
             songNowElement.style.cursor = 'pointer';
             songNowElement.innerHTML = '';
             songNowElement.innerHTML = `
-                    <h6>You are listening to <strong>${data.item.name}</strong> <img src='${data.item.album.images[2].url}' alt="${data.item.name}" style="object-fit: cover; border-radius: 5px; height: 1.5em; width: auto;"></h6>
-                    <div>By <strong>${data.item.artists[0].name}</strong> on <strong>${device}</strong></div>
-                `;
+                    <a style="text-decoration: none; color: #666666;" 
+                    href="${data.item.external_urls.spotify}" 
+                    target="_blank" 
+                    rel="noopener noreferrer">
+                    <h6>
+                        You are listening to <strong>${data.item.name}</strong> 
+                        <img src="${data.item.album.images[2].url}" 
+                                alt="${data.item.name}" 
+                                style="object-fit: cover; border-radius: 5px; height: 1.5em; width: auto;">
+                    </h6>
+                    <div>
+                        By <strong>${data.item.artists[0].name}</strong> on <strong>${device}</strong>
+                    </div>
+                    </a>
+
+                    `;
         })
         .catch(() => {
             songNowElement.innerHTML = `<h6>You are not listening to any song</h6>`;
