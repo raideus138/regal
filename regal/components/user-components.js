@@ -59,6 +59,7 @@ fetch('/me/following')
         .then(topTracks => {
             let index = 0;
             topTracks.forEach(track => {
+                console.log(track   )
                 const newRow = document.createElement('tr');
                 newRow.classList.add('trackRow');
                 newRow.setAttribute('data-url', track.external_urls.spotify);
@@ -155,17 +156,15 @@ fetch('/recently-played')
         }
         let index = 0;
         recentlyPlayed.forEach(track => {
-            console.log(track)
-            let firstArtist = track.artist;
-
+            let firstArtist = track.track.artists[0].name;
             const trackElement = document.createElement('tr');
             trackElement.innerHTML = `
                     <td>${index + 1}</td>
                     <td>
-                        <img src='${track.album.images[0]}' alt="${track.name}" 
+                        <img src='${track.track.album.images[0].url}' alt="${track.name}" 
                             style="object-fit: cover; border-radius: 5px;">
                     </td>
-                    <td>${track.name} <strong>(${firstArtist})</strong></td>
+                    <td>${track.track.name} <strong>(${firstArtist})</strong></td>
                 `;
             recentlyPlayedElement.appendChild(trackElement);
             index++;
