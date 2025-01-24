@@ -6,10 +6,13 @@ const { modelUser, connectdb } = require('./db.js');
 const dotenv = require('dotenv');
 
 dotenv.config()
-
 function connectPassport() {
     const User = modelUser();
     connectdb();    
+    if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.CALLBACK_URL) {
+        throw new Error('CLIENT_ID, CLIENT_SECRET o CALLBACK_URL no están definidas en .env');
+    }
+
     passport.use(new SpotifyStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,

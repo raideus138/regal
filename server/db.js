@@ -26,9 +26,12 @@ async function connectdb() {
         await mongoose.connect(process.env.MONGO_URI, {
             serverSelectionTimeoutMS: 5000, 
         });
+        console.log('conexion a mongo');
     } catch (error) {
-        process.exit(1)
+        console.error('Error al conectar a MongoDB:', error);
+        process.exit(1);
     }
 }
+
 
 module.exports = { connectdb, modelUser };

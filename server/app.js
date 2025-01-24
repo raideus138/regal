@@ -38,3 +38,11 @@ app.use((req, res) => {
 app.listen(port, () => {
   console.log(`La aplicación está en funcionamiento en http://localhost:${port}`);
 });
+
+process.on('exit', (code) => {
+  console.log(`El proceso está saliendo con el código: ${code}`);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Error no capturado:', err);
+});

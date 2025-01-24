@@ -7,9 +7,17 @@ let urlPlaylist = '';
 
 const date = new Date();
 const dateText = document.getElementById("date");
+const userElement = document.getElementById('user-name');
+const followingElement = document.querySelector('.about-you');
+const tbody = document.querySelector('.table tbody');
+const topArtistsList = document.querySelector('.table-artists tbody');
+const topGenresList = document.querySelector('.table-genre tbody');
+const recentlyPlayedElement = document.querySelector('.recently-played');
+const songNowElement = document.getElementById('song-now');
+
+
 dateText.textContent = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-const userElement = document.getElementById('user-name');
 fetch('/me')
     .then(response => response.json())
     .then(userProfile => {
@@ -23,36 +31,34 @@ fetch('/me')
         userElement.textContent = 'User not found';
     });
 
-const followingElement = document.querySelector('.about-you');
 fetch('/me/following')
     .then(response => {
         if (!response.ok) {
-            followingElement.innerHTML = `<p>Could not fetch following data. Error: ${error.message}</p>`;
-            throw new Error(`Error fetching following data: ${response.statusText}`);
+            return
         }
         return response.json();
     })
     .then(following => {
         transform_iso_to_name(ISO_country).then(countryName => {
             country = countryName;
-            followingElement.innerHTML = `<p>You follow <strong>${following.artists.total}</strong> people and listen to them from <strong  >${country}</strong> on Spotify</p>`;
+            console.log(country)
         });
         if (following && following.artists && following.artists.total) {
             followingElement.innerHTML = `<p>You follow <strong>${following.artists.total}</strong> people and listen to them from <str>${country}</str> on Spotify</p>`;
         } else {
-            followingElement.innerHTML = `<p>No following data available</p>`;
+            followingElement.innerHTML = `<p>We don/'t have data about you!</p>`;
         }
     })
     .catch(error => {
-        followingElement.innerHTML = `<p>Could not fetch following data. Error: ${error.message}</p>`;
+        followingElement.innerHTML = `<p style="color:red;">We don't have data about you!</p>`;
+        return
     });
 
-const tbody = document.querySelector('.table tbody');
 
 fetch('/top-tracks')
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Error (${response.status}): ${response.statusText}`);
+            return
         }
         return response.json();
     })
@@ -86,15 +92,14 @@ fetch('/top-tracks')
         });
     })
     .catch(error => {
-        tbody.innerHTML = `<tr><td colspan="11">We couldn't find your top tracks. The error is: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td style="color:red;" colspan="11">We couldn't find your top tracks! Try again.</td></tr>`;
     });
 
 
-const topArtistsList = document.querySelector('.table-artists tbody');
 fetch('/top-artists')
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Error (${response.status}): ${response.statusText}`);
+            return
         }
         return response.json();
     })
@@ -121,13 +126,12 @@ fetch('/top-artists')
             index++;
         });
     })
-    .catch(error => topArtistsList.innerHTML = `<tr><td colspan="4">We couldn't find your favorite artists. The error is: ${error.message}</td></tr>`);
+    .catch(error => topArtistsList.innerHTML = `<tr><td colspan="4" style='color: red;'>We couldn't find your favorite artists! Try again.</td></tr>`);
 
-const topGenresList = document.querySelector('.table-genre tbody');
 fetch('/top-genres')
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Error (${response.status}): ${response.statusText}`);
+            return
         }
         return response.json();
     })
@@ -143,14 +147,12 @@ fetch('/top-genres')
             index++;
         });
     })
-    .catch(error => topGenresList.innerHTML = `<tr><td colspan="2">We couldn't find your top genres. The error is: ${error.message}</td></tr>`);
+    .catch(error => topGenresList.innerHTML = `<tr><td style='color:red;;' colspan="2">We couldn't find your top genres! Try again.</td></tr>`);
 
-const recentlyPlayedElement = document.querySelector('.recently-played');
 fetch('/recently-played')
     .then(response => response.json())
     .then(recentlyPlayed => {
         if (!recentlyPlayed || recentlyPlayed.length === 0) {
-            recentlyPlayedElement.innerHTML = '<p>No recently played tracks found.</p>';
             return;
         }
         let index = 0;
@@ -170,7 +172,7 @@ fetch('/recently-played')
         });
     })
     .catch(error => {
-        recentlyPlayedElement.innerHTML = `<p>We couldn't find your recently played tracks. The error is: ${error.message}</p>`;
+        recentlyPlayedElement.innerHTML = `<p style='color: red;'>We couldn't find your recently played tracks! Try Again.</p>`;
     });
 
 fetch('/devices')
@@ -186,7 +188,6 @@ fetch('/devices')
         });
     });
 
-const songNowElement = document.getElementById('song-now');
 function fetchSongNow() {
     fetch('/song-now')
         .then(response => response.json())
