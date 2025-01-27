@@ -31,10 +31,11 @@
     </div>
 </div>
 
+<!-- <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+      </div> -->
+
   <div class="container-scroller">
-    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      </div>
+    <nav class="navbar fixed-top">
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown d-flex mr-4 ">
@@ -71,9 +72,9 @@
         </div>
         <ul class="nav">
           <li class="nav-item pointer">
-            <a class="nav-link" href="main.html">
-              <i class="icon-box menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
+            <a class="nav-link reload">
+              <i class="icon-reload menu-icon"></i>
+              <span class="menu-title">Reload</span>
             </a>
           </li>
           <li class="nav-item pointer">
@@ -140,7 +141,7 @@
                         <th>Artist</th>
                       </tr>
                     </thead>
-                    <tbody style="cursor: pointer;">
+                    <tbody class="pointer">
                     </tbody>
                   </table>
                 </div>
@@ -162,7 +163,7 @@
                         <th>Artist</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="pointer">
                     </tbody>
                   </table>
                 </div>
@@ -180,10 +181,10 @@
                       <tr>
                         <th>Top</th>
                         <th></th>
-                        <th>Genre</th>
+                        <th>Track</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="pointer">
                     </tbody>
                   </table>
                 </div>
@@ -225,7 +226,6 @@
 
 
 <script src="vendors/base/vendor.bundle.base.js"></script>
-<script src="vendors/jquery-bar-rating/jquery.barrating.min.js"></script>
 <script src="components/user-components.js"></script>
 <script src="js/dashboard.js"></script>
 

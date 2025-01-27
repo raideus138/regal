@@ -215,5 +215,25 @@ nav[data-state=open] ul li:nth-child(4) {
   .container {
     margin-top: 70px;
     margin-bottom: 70px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  body {
+    display: block;
+  }
+
+  .container {
+    margin-top: 70px;
+    margin-bottom: 70px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container > div {
+    display: flex;
+    justify-content: center;
   }
 }

@@ -125,17 +125,8 @@ function getRoutes(app) {
             if (err) {
                 console.error('Error al destruir la sesión:', err);
                 return res.status(500).send('Error al cerrar sesión.');
-            }
-    
-            res.send(`
-                <script>
-                    const spotifyLogout = window.open('https://www.spotify.com/logout/', 'Spotify Logout', 'width=700,height=500,top=40,left=40');
-                    setTimeout(() => {
-                        spotifyLogout.close();
-                        window.location.href = '/index.html';
-                    }, 200);
-                </script>
-            `);
+            };
+            window.location.href = '/index.html';
         });
     });
 
