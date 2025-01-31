@@ -19,4 +19,4 @@ def delete_playlists(num_playlists):
         pya.click()
         time.sleep(1)  
 
-delete_playlists(10)
+delete_playlists(0)

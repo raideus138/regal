@@ -11,34 +11,28 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
   <link rel="stylesheet" href="css/popup.css">
   <link rel="shortcut icon" href="assets/astronaut.svg" type="image/svg+xml">
-
 </head>
 
 <body>
-
   <div class="overlay" id="overlay">
     <div class="popup" id="popup">
-        <button class="close-button" onclick="hidePopup()">&times;</button>
-        <div class="popup-content">
-            <h2>Create Your Playlsit</h2>
-            <p class="playlist-text">Create your playlist with your most repeated songs of the month</p>
-            <button type="submit" class="submit-button PLAYLIST">
-              Create the playlist!
-              
-            </button>
-            <button type="submit" class="submit-button GO" style="display: none;">Go to Spotify</button>
-        </div>
+      <button class="close-button" onclick="hidePopup()">&times;</button>
+      <div class="popup-content">
+        <h2>Create Your Playlsit</h2>
+        <p class="playlist-text">Create your playlist with your most repeated songs of the month</p>
+        <button type="submit" class="submit-button PLAYLIST">
+          Create the playlist!
+
+        </button>
+        <button type="submit" class="submit-button GO" style="display: none;">Go to Spotify</button>
+      </div>
     </div>
-</div>
-
-<!-- <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      </div> -->
-
+  </div>
   <div class="container-scroller">
     <nav class="navbar fixed-top">
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown d-flex mr-4 ">
+          <li class="nav-item nav-item-settings dropdown d-flex mr-4 ">
             <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
               id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-cog"></i>
@@ -74,7 +68,7 @@
           <li class="nav-item pointer">
             <a class="nav-link reload">
               <i class="icon-reload menu-icon"></i>
-              <span class="menu-title">Reload</span>
+              <span class="menu-title">Reload <span style="opacity: 0.5;">(F5)</span></span>
             </a>
           </li>
           <li class="nav-item pointer">
@@ -190,7 +184,6 @@
                 </div>
               </div>
             </div>
-
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Top Genres</h4>
@@ -211,20 +204,18 @@
                 </div>
               </div>
             </div>
+            <button class="submit-button home"><i class="bi bi-arrow-up-circle-fill"></i></button>
           </div>
         </div>
-        
         <br>
         <footer class="footer">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © RVC 2024</span>
-        </footer>
+            <strong><i class="github pointer bi bi-github text-muted d-block text-center text-sm-left d-sm-inline-block"></i></strong>
+            <span class="copyright text-muted d-block text-center text-sm-left d-sm-inline-block"></span>
+          </div>
       </div>
     </div>
-  </div>
-  </body>
-
-
+</body>
 <script src="vendors/base/vendor.bundle.base.js"></script>
 <script src="components/user-components.js"></script>
 <script src="js/dashboard.js"></script>

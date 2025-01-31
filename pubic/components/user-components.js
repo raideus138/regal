@@ -1,5 +1,4 @@
-const date = new Date();
-const dateText = document.getElementById("date");
+
 const userElement = document.getElementById('user-name');
 const followingElement = document.querySelector('.about-you');
 const tbody = document.querySelector('.table tbody');
@@ -16,7 +15,6 @@ let device = '';
 let urlPlaylist = '';
 let intervalId;
 
-dateText.textContent = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
 fetch('/me')
     .then(response => response.json())
