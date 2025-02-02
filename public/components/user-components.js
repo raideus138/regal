@@ -1,4 +1,3 @@
-
 const userElement = document.getElementById('user-name');
 const followingElement = document.querySelector('.about-you');
 const tbody = document.querySelector('.table tbody');

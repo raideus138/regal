@@ -13,6 +13,7 @@ const dom = {
   settingsElementLi: document.querySelector('.nav-item-settings'),
   settingsElementA: document.querySelector('.nav-link'),
   settingsElementDiv: document.querySelector('.dropdown-menu'),
+  settingsElementIcon: document.querySelector('.icon-cog'),
   githubElement: document.querySelector('.github'),
   arrowUpElement: document.querySelector('.home'),
   dateElement: document.querySelector('#date'),
@@ -80,6 +81,10 @@ dom.arrowUpElement.addEventListener('click', () => {
   });
 });
 
+dom.settingsElementA.addEventListener('click', () => {
+  statusButtonNav ? showSettingsNav() : hideSettingsNav();
+});
+
 dom.githubElement.addEventListener('click', () => {
   window.open('https://github.com/raideus138/regal', '_blank')
 });
@@ -87,6 +92,8 @@ dom.githubElement.addEventListener('click', () => {
 dom.toggleNavBarButton.addEventListener('click', () => {
   req = statusNavBar ? showNavBar() : hideNavBar();
 });
+
+
 
 document.addEventListener('keydown', (e) => {
   e.preventDefault();
