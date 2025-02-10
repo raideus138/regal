@@ -1,5 +1,6 @@
 import pyautogui as pya
 import time
+import subprocess as sp
 
 def delete_playlists(num_playlists):
     screenWidth, screenHeight = pya.size()
@@ -19,4 +20,15 @@ def delete_playlists(num_playlists):
         pya.click()
         time.sleep(1)  
 
-delete_playlists(0)
+def delete_unused_dependencies():
+    file = './requeriments-not-use'
+    if file:    
+        file = open(file, 'r')
+        file = file.readlines()
+        print(file)
+        for line in file:
+            l = line.split('@')
+            comand = f'npm uninstall {l[0]}'
+            sp.run(comand, capture_output=True, text=True, shell=True)
+        
+delete_unused_dependencies()

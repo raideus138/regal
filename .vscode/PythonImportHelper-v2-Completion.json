@@ -18,11 +18,29 @@
         "documentation": {}
     },
     {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
         "label": "delete_playlists",
         "kind": 2,
         "importPath": "delete-playlist",
         "description": "delete-playlist",
         "peekOfCode": "def delete_playlists(num_playlists):\n    screenWidth, screenHeight = pya.size()\n    spotify = pya.getWindowsWithTitle('Spotify')[0]\n    spotify.activate()\n    for _ in range(num_playlists):\n        pya.mouseDown(x=300, y=350)\n        pya.click(button='right')\n        time.sleep(0.5)  \n        pya.moveTo(x=320, y=550)\n        pya.click()",
+        "detail": "delete-playlist",
+        "documentation": {}
+    },
+    {
+        "label": "delete_unused_dependencies",
+        "kind": 2,
+        "importPath": "delete-playlist",
+        "description": "delete-playlist",
+        "peekOfCode": "def delete_unused_dependencies():\n    file = './requeriments-not-use'\n    if file:    \n        file = open(file, 'r')\n        file = file.readlines()\n        print(file)\n        for line in file:\n            l = line.split('@')\n            comand = f'npm uninstall {l[0]}'\n            sp.run(comand, capture_output=True, text=True, shell=True)",
         "detail": "delete-playlist",
         "documentation": {}
     }

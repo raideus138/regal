@@ -33,6 +33,7 @@ function getRoutes(app) {
             res.redirect("/main.html");
         }
     );
+    const isAuthenticated = (req) => req.isAuthenticated ? req.isAuthenticated() : false;
 
     app.get("/callback", passport.authenticate("spotify", {
         failureRedirect: "/",
@@ -56,6 +57,7 @@ function getRoutes(app) {
                     }
                 );
 
+
                 const { access_token, refresh_token, expires_in } = response.data;
                 user.accessToken = access_token;
                 user.refreshToken = refresh_token;
@@ -76,7 +78,7 @@ function getRoutes(app) {
 
     app.get("/me", async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send("No autorizado");
             }
 
@@ -101,9 +103,10 @@ function getRoutes(app) {
         }
     });
 
+
     app.get('/devices', async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send('No autorizado');
             }
             const accessToken = req.user.accessToken;
@@ -132,7 +135,7 @@ function getRoutes(app) {
 
     app.get('/me/following', async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send('No autorizado');
             }
 
@@ -156,7 +159,7 @@ function getRoutes(app) {
 
     app.get("/top-tracks", async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send("No autorizado");
             }
             const accessToken = req.user.accessToken;
@@ -186,7 +189,7 @@ function getRoutes(app) {
 
     app.get("/top-artist", async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send("No autorizado");
             }
             const accessToken = req.user.accessToken;
@@ -211,7 +214,7 @@ function getRoutes(app) {
 
     app.get("/top-artists", async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send("No autorizado");
             }
             const accessToken = req.user.accessToken;
@@ -249,7 +252,7 @@ function getRoutes(app) {
 
     app.get("/song-now", async (req, res) => {
         try {
-            if (!req.isAuthenticated()) {
+            if (!isAuthenticated(req)) {
                 return res.status(401).send("No autorizado");
             } else {
                 const accessToken = req.user.accessToken;

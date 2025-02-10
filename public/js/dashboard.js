@@ -13,7 +13,7 @@ const dom = {
   settingsElementLi: document.querySelector('.nav-item-settings'),
   settingsElementA: document.querySelector('.nav-link'),
   settingsElementDiv: document.querySelector('.dropdown-menu'),
-  settingsElementIcon: document.querySelector('.icon-cog'),
+  settingsElementIcon: document.querySelector('.bi-three-dots-vertical'),
   githubElement: document.querySelector('.github'),
   arrowUpElement: document.querySelector('.home'),
   dateElement: document.querySelector('#date'),
@@ -92,8 +92,6 @@ dom.githubElement.addEventListener('click', () => {
 dom.toggleNavBarButton.addEventListener('click', () => {
   req = statusNavBar ? showNavBar() : hideNavBar();
 });
-
-
 
 document.addEventListener('keydown', (e) => {
   e.preventDefault();

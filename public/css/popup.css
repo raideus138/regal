@@ -4,9 +4,6 @@
             --text-color: #1F2937;
             --bg-color: #F3F4F6;
         }
-
-
-
         .overlay {
             display: none;
             position: fixed;
@@ -81,7 +78,7 @@
             font-size: 28px;
             font-weight: 700;
             background: var(--primary-gradient);
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
         }
@@ -212,26 +209,3 @@
                 font-size: 24px;
             }
         }
-
-        /* Decorative elements */
-        .decorative-shape {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
-            z-index: -1;
-        }
-
-        .shape-1 {
-            top: -20px;
-            left: -20px;
-        }
-
-        .shape-2 {
-            bottom: -20px;
-            right: -20px;
-            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
-        }
-
-        
