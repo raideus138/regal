@@ -1,4 +1,3 @@
-
 let statusNavBar = true;
 let statusButtonNav = true
 let statusPage = true;

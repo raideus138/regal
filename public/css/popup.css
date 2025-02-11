@@ -4,6 +4,7 @@
             --text-color: #1F2937;
             --bg-color: #F3F4F6;
         }
+        
         .overlay {
             display: none;
             position: fixed;
